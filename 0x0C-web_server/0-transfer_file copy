@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# ./0-transfer_file 1-install_nginx_web_server 100.25.140.120 ubuntu /ssh/id_rsa
+#  a Bash script that transfers a file from our client to a server
+# run with ./0-transfer_file another_page.html 35.168.7.107 ubuntu ~/.ssh/school
+
+if [ "$#" -ne 4 ]; then
+	echo "Usage: 0-transfer_file PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
+	exit 1
+fi
+file="$1"
+ip="$2"
+username="$3"
+path_to_ssh="$4"
+scp -o StrictHostKeyChecking=no -i "$path_to_ssh" "$file" "$username@$ip":~

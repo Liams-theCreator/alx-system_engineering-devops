@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-# a script to fix for curling port 80 return a page that contains Hello Holberton
+# Fix my server with this line
 service apache2 start

@@ -1,24 +1,23 @@
 #!/usr/bin/python3
-""" Export api to csv"""
-import csv
-import requests
-import sys
+"""Script to export all employee data in the CSV format"""
 
-if __name__ == '__main__':
-    user = sys.argv[1]
-    url_user = 'https://jsonplaceholder.typicode.com/users/' + user
-    res = requests.get(url_user)
-    """ANYTHING"""
-    user_name = res.json().get('username')
-    task = url_user + '/todos'
-    res = requests.get(task)
-    tasks = res.json()
+if __name__ == "__main__":
 
-    with open('{}.csv'.format(user), 'w') as csvfile:
-        for task in tasks:
-            completed = task.get('completed')
-            """Complete"""
-            title_task = task.get('title')
-            """Done"""
-            csvfile.write('"{}","{}","{}","{}"\n'.format(
-                user, user_name, completed, title_task))
+    import csv
+    import requests
+    import sys
+
+    uid = sys.argv[1]
+    usr = requests.get("https://jsonplaceholder.typicode.com/users/{}"
+                       .format(uid))
+    name = usr.json().get('username')
+    todos = requests.get('https://jsonplaceholder.typicode.com/todos')
+
+    file = uid + '.csv'
+    with open(file, mode='w') as f:
+        write = csv.writer(f, delimiter=',', quotechar='"',
+                           quoting=csv.QUOTE_ALL, lineterminator='\n')
+        for task in todos.json():
+            if task.get('userId') == int(uid):
+                write.writerow([uid, name, str(task.get('completed')),
+                                task.get('title')])

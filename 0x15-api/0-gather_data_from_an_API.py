@@ -1,30 +1,27 @@
 #!/usr/bin/python3
-'''
-gather employee data from API
-'''
-
-import re
+"""returns an employee ToDo list progress using a REST-API"""
 import requests
 import sys
 
-REST_API = "https://jsonplaceholder.typicode.com"
+if __name__ == "__main__":
+    url_t = "https://jsonplaceholder.typicode.com/todos"
+    url_todo = requests.get(url_t).json()
+    url_user = requests.get("https://jsonplaceholder.typicode.com/users/{}"
+                            .format(sys.argv[1])).json()
+    user_n = url_user.get('name')
+    user_id = url_user.get('id')
+    tasks = []
+    doneTasks = 0
+    totalTasks = 0
 
-if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        if re.fullmatch(r'\d+', sys.argv[1]):
-            id = int(sys.argv[1])
-            req = requests.get('{}/users/{}'.format(REST_API, id)).json()
-            task_req = requests.get('{}/todos'.format(REST_API)).json()
-            emp_name = req.get('name')
-            tasks = list(filter(lambda x: x.get('userId') == id, task_req))
-            completed_tasks = list(filter(lambda x: x.get('completed'), tasks))
-            print(
-                'Employee {} is done with tasks({}/{}):'.format(
-                    emp_name,
-                    len(completed_tasks),
-                    len(tasks)
-                )
-            )
-            if len(completed_tasks) > 0:
-                for task in completed_tasks:
-                    print('\t {}'.format(task.get('title')))
+    for stat in url_todo:
+        if user_id == stat.get('userId'):
+            if stat.get('completed') is True:
+                doneTasks = doneTasks + 1
+                tasks.append(stat.get('title'))
+            totalTasks = totalTasks + 1
+    print("Employee {} is done with tasks({}/{}):"
+          .format(user_n, doneTasks, totalTasks))
+
+    for data in tasks:
+        print('\t', data)

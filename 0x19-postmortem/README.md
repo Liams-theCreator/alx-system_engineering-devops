@@ -1,0 +1,1 @@
+https://shazaali.substack.com/p/0x19-postmortem
